@@ -1,7 +1,7 @@
-import { ToolInvocation, streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { z } from "zod";
-import { exchangeData } from "@/app/api/exchange/exchange-data";
+import {streamText, ToolInvocation} from "ai";
+import {openai} from "@ai-sdk/openai";
+import {z} from "zod";
+import {exchangeData} from "@/app/api/exchange/exchange-data";
 import {checkOpenAIApiKey} from "@/app/api/exchange/check-open-ai-api-key";
 
 const RAPID_API_KEY = process.env.RAPID_API_KEY;
@@ -64,10 +64,10 @@ export async function POST(req: Request) {
     }
 
     async function convertCurrency({
-                                     from,
-                                     to,
-                                     amount,
-                                   }: {
+      from,
+      to,
+      amount,
+    }: {
       from: string;
       to: string;
       amount: number;
@@ -77,16 +77,24 @@ export async function POST(req: Request) {
     }
 
     const result = streamText({
-      model: openai("gpt-4o"),
-      system:
-        "You are a financial assistant that helps with currency conversion. You are not to answer any questions that are not about currency conversion.",
+      model: openai("gpt-4"),
+      system: `You are a financial assistant specializing in currency exchange rates. 
+        IMPORTANT: You must ALWAYS use the getExchangeRate tool to look up rates, even if asked for currency conversion.
+        - When asked about converting amounts, first use getExchangeRate to show the rate, then proceed with conversion
+        - Always display the exchange rate before showing any conversions
+        - Never provide exchange rates from memory or estimation
+        - Respond to questions about rates by immediately calling getExchangeRate
+        - You must not perform currency calculations without using the tools
+        - For any currency-related question, always start by checking the exchange rate
+        - Never skip checking the exchange rate, even if you think you know it`,
       messages,
       tools: {
         getExchangeRate: {
-          description: "Get the exchange rate between two currencies",
+          description:
+            "Get the current exchange rate between two currencies. This tool must be called before any currency calculations.",
           parameters: z.object({
-            from: z.string().describe("The currency code to convert from"),
-            to: z.string().describe("The currency code to convert to"),
+            from: z.string().describe("The source currency code (e.g., USD)"),
+            to: z.string().describe("The target currency code (e.g., EUR)"),
           }),
           execute: async ({ from, to }) => {
             const rate = await getExchangeRate({ from, to });
@@ -96,7 +104,8 @@ export async function POST(req: Request) {
           },
         },
         convertCurrency: {
-          description: "Convert an amount of money between two currencies",
+          description:
+            "Convert an amount of money between two currencies. Must use getExchangeRate first.",
           parameters: z.object({
             from: z.string().describe("The currency code to convert from"),
             to: z.string().describe("The currency code to convert to"),
@@ -115,9 +124,9 @@ export async function POST(req: Request) {
         },
       },
     });
-
     return result.toDataStreamResponse();
   } catch (error) {
+    console.error("Error in POST:", error); // Debug log
     if (error instanceof Response) {
       return error;
     }
