@@ -12,7 +12,7 @@ export default function Page() {
     api: '/api/exchange',
     maxSteps: 5,
     onError(error) {
-      setSystemError(error.message);
+      setSystemError(error.message + " Check your OpenAI API key in .env.local");
     },
     onFinish() {
       setSystemError(null);

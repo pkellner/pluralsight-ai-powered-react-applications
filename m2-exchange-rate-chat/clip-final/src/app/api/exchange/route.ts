@@ -17,13 +17,11 @@ type ConversionRates = Record<string, number>;
 
 async function fetchConversionRates(): Promise<ConversionRates> {
   if (!USE_RAPID_API_DATA) {
-    console.log("Using Rapid API data stored locally from 12/19/2014");
     return new Promise((resolve) => {
       resolve(exchangeData.conversion_rates as ConversionRates);
     });
   }
 
-  console.log("Fetching exchange rates from Rapid API using a free account");
   const endpoint = `https://v6.exchangerate-api.com/v6/${RAPID_API_KEY}/latest/USD`;
   const response = await fetch(endpoint);
 
@@ -41,9 +39,7 @@ async function fetchConversionRates(): Promise<ConversionRates> {
   return data.conversion_rates;
 }
 
-// ---- NO OTHER CHANGES EXCEPT SWITCHING TO THROW RESPONSES ON ERRORS ----
 export async function POST(req: Request) {
-  // Check the OpenAI API key first
   const apiKeyCheck = checkOpenAIApiKey();
   if (apiKeyCheck) {
     return apiKeyCheck;
@@ -122,11 +118,10 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
   } catch (error) {
-    // If the error is already a Response, return it as is
     if (error instanceof Response) {
       return error;
     }
-    // Otherwise, return a generic 500 error
+
     return new Response(
       JSON.stringify({
         error: "Unknown error",
