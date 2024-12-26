@@ -1,14 +1,22 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { marked } from 'marked';
 import DOMPurify from 'dompurify';
 
 export default function Page() {
+  const [systemError, setSystemError] = useState<string | null>(null);
+
   const { messages, input, setInput, append } = useChat({
     api: '/api/exchange',
     maxSteps: 5,
+    onError(error) {
+      setSystemError(error.message);
+    },
+    onFinish() {
+      setSystemError(null);
+    },
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -23,7 +31,6 @@ export default function Page() {
   function handleSend() {
     if (!input.trim()) return;
 
-    // Append the user's input
     append({ content: input, role: 'user' });
     setInput('');
     if (inputRef.current) {
@@ -37,23 +44,30 @@ export default function Page() {
         Currency Conversion Chat
       </header>
       <main ref={mainRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+        {systemError && (
+          <div className="max-w-md p-3 mb-4 rounded-md border border-red-600 bg-red-50 text-red-800 font-semibold">
+            {systemError}
+          </div>
+        )}
         {messages.map(function (message, index) {
           const htmlContent = marked(message.content);
           const safeHtml = DOMPurify.sanitize(htmlContent as string);
-          return <div
-            key={index}
-            className={`max-w-md p-3 rounded-lg shadow break-words ${
-              message.role === 'user'
-                ? 'bg-blue-400 text-white self-end ml-auto'
-                : 'bg-gray-200 text-black self-start mr-auto'
-            }`}
-          >
-            {message.content.length === 0 ? (
-              <span className="italic text-gray-500">Thinking...</span>
-            ) : (
-              <div dangerouslySetInnerHTML={{__html: safeHtml}}/>
-            )}
-          </div>;
+          return (
+            <div
+              key={index}
+              className={`max-w-md p-3 rounded-lg shadow break-words ${
+                message.role === 'user'
+                  ? 'bg-blue-400 text-white self-end ml-auto'
+                  : 'bg-gray-200 text-black self-start mr-auto'
+              }`}
+            >
+              {message.content.length === 0 ? (
+                <span className="italic text-gray-500">Thinking...</span>
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
+              )}
+            </div>
+          );
         })}
       </main>
       <div className="p-4 bg-white border-t flex items-center space-x-2">
