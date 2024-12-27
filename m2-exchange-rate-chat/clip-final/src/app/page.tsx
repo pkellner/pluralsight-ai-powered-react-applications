@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
-import { useChat } from 'ai/react';
-import { useRef, useEffect, useState } from 'react';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import { useChat } from "ai/react";
+import { useRef, useEffect, useState } from "react";
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
 export default function Page() {
   const [systemError, setSystemError] = useState<string | null>(null);
 
   const { messages, input, setInput, append } = useChat({
-    api: '/api/exchange',
+    api: "/api/exchange",
     maxSteps: 5,
     onError(error) {
-      setSystemError(error.message + " Check your authorization keys in .env.local");
+      setSystemError(
+        error.message + " Check your authorization keys in .env.local",
+      );
     },
     onFinish() {
       setSystemError(null);
@@ -31,8 +33,8 @@ export default function Page() {
   function handleSend() {
     if (!input.trim()) return;
 
-    append({ content: input, role: 'user' });
-    setInput('');
+    append({ content: input, role: "user" });
+    setInput("");
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -56,9 +58,9 @@ export default function Page() {
             <div
               key={index}
               className={`max-w-md p-3 rounded-lg shadow break-words ${
-                message.role === 'user'
-                  ? 'bg-blue-400 text-white self-end ml-auto'
-                  : 'bg-gray-200 text-black self-start mr-auto'
+                message.role === "user"
+                  ? "bg-blue-400 text-white self-end ml-auto"
+                  : "bg-gray-200 text-black self-start mr-auto"
               }`}
             >
               {message.content.length === 0 ? (
@@ -77,7 +79,7 @@ export default function Page() {
           value={input}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === "Enter") {
               handleSend();
             }
           }}

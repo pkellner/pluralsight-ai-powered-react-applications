@@ -1,9 +1,7 @@
-import {generateText} from "ai";
-import {openai} from "@ai-sdk/openai";
+import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
 export async function GET() {
-
-
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   await sleep(1000);
