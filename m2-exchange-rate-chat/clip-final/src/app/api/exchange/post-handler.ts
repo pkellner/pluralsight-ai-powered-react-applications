@@ -24,8 +24,8 @@ export async function postHandler(req: Request) {
     const { messages }: { messages: Message[] } = await req.json();
     const conversionRates = await getConversionRates();
 
-    // The critical fix: await the streamText promise.
-    const result = streamText({
+    // We need await here, so that the streaming process is properly set up
+    const result = await streamText({
       model: openai("gpt-4"),
       system: `You are a financial assistant that specializes in currency information and conversion.
         CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE EXACTLY:
@@ -46,21 +46,23 @@ export async function postHandler(req: Request) {
       messages,
       tools: {
         getExchangeRate: {
-          description: "Get the exchange rate between two currencies. This MUST be called FIRST for all currency queries.",
+          description:
+            "Get the exchange rate between two currencies. This MUST be called FIRST for all currency queries.",
           parameters: z.object({
             from: z.string().describe("The source currency code (e.g., USD)"),
             to: z.string().describe("The target currency code (e.g., EUR)"),
           }),
-          execute: async ({from, to}) => {
+          execute: async ({ from, to }) => {
             console.log("Executing getExchangeRate:", from, to);
-            const rate = await getExchangeRate({from, to, conversionRates});
+            const rate = await getExchangeRate({ from, to, conversionRates });
             return `The exchange rate from ${from} to ${to} is ${rate.toFixed(
               6
             )}.`;
           },
         },
         convertCurrency: {
-          description: "Convert an amount between currencies. This MUST be called SECOND, after getExchangeRate.",
+          description:
+            "Convert an amount between currencies. This MUST be called SECOND, after getExchangeRate.",
           parameters: z.object({
             from: z.string().describe("The currency code to convert from"),
             to: z.string().describe("The currency code to convert to"),
@@ -68,9 +70,9 @@ export async function postHandler(req: Request) {
               .number()
               .describe("The amount to convert (use 1 if no amount specified)"),
           }),
-          execute: async ({from, to, amount}) => {
+          execute: async ({ from, to, amount }) => {
             console.log("Executing convertCurrency:", from, to, amount);
-            const {convertedAmount, rate} = await convertCurrency({
+            const { convertedAmount, rate } = await convertCurrency({
               from,
               to,
               amount,
@@ -84,7 +86,8 @@ export async function postHandler(req: Request) {
       },
     });
 
-    // Return the streamed response
+    // 2) We can just return the Promise from .toDataStreamResponse()
+    //    rather than awaiting it again
     return result.toDataStreamResponse();
   } catch (error) {
     console.error("Error in POST:", error);
