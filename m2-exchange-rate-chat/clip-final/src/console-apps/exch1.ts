@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import 'dotenv/config';
+import "dotenv/config";
 
 async function main(): Promise<void> {
   // Example prompt for the AI model

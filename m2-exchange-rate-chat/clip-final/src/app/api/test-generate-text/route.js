@@ -19,6 +19,6 @@ export async function GET() {
         <b>${summary.text}</b>
       </body>
     </html>`,
-    { headers: { "Content-Type": "text/html" } }
+    { headers: { "Content-Type": "text/html" } },
   );
 }

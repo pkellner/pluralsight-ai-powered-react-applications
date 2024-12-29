@@ -1,6 +1,6 @@
-import {streamText, ToolInvocation} from "ai";
+import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import 'dotenv/config';
+import "dotenv/config";
 
 interface Message {
   role: "user" | "assistant";
@@ -8,19 +8,20 @@ interface Message {
 }
 
 async function main() {
-  const messages : Message[] = [
+  const messages: Message[] = [
     {
       role: "assistant",
       content: `You are an AI that provides responses based on the following rules:
-      1. For currency conversions, assume $1 (USD) is equivalent to €0.5 (EUR).
-      2. You also know that $1 (USD) is equivalent to ¥110 (Yen).
-      3. You can make assumptions for converting between all three currencies rates  (NEED THIS OR IT REFUSES TO WORK)
-      4. If asked about any currency conversions other than USD, EUR and Yen, respond with "Those are the only currencies I know."`
+      1. You can only answer questions about currency conversions that involve USD, EUR and Yen. Otherwise respond appropriately.
+      2. The only currencies you know about are the USD, EUR and YEN
+      3. For currency conversions, assume $1 (USD) is equivalent to €0.5 (EUR).
+      4. You also know that $1 (USD) is equivalent to ¥110 (Yen).
+      5. You can make assumptions for converting between all three currencies rates`,
     },
     {
       role: "user",
-      content: `Convert $150 Dollars to Euros.`
-    }
+      content: `Convert $150 Dollars to Euros.`,
+    },
   ];
 
   const result1 = await streamText({
@@ -40,7 +41,7 @@ async function main() {
   // Add the second question to the conversation
   messages.push({
     role: "user",
-    content: `Assume I have the number of Euros you just converted for me, tell me how much that might be in Yen?`
+    content: `Assume I have the number of Euros you just converted for me, tell me how much that might be in Yen?`,
   });
 
   const result2 = await streamText({

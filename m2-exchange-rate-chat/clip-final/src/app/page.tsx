@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "ai/react";
-import { useRef, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 
@@ -66,7 +66,7 @@ export default function Page() {
               {message.content.length === 0 ? (
                 <span className="italic text-gray-500">Thinking...</span>
               ) : (
-                <div dangerouslySetInnerHTML={{__html: safeHtml}}/>
+                <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
               )}
             </div>
           );
@@ -98,9 +98,9 @@ export default function Page() {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M0 0h24v24H0z" stroke="none"/>
-            <path d="M10 14l11 -11"/>
-            <path d="M21 3l-6.5 18.4a0.55.55 0 0 1 -1 .1l-2.72 -7.05l-7.05 -2.72a0.55.55 0 0 1 .1 -1L21 3"/>
+            <path d="M0 0h24v24H0z" stroke="none" />
+            <path d="M10 14l11 -11" />
+            <path d="M21 3l-6.5 18.4a0.55.55 0 0 1 -1 .1l-2.72 -7.05l-7.05 -2.72a0.55.55 0 0 1 .1 -1L21 3" />
           </svg>
         </button>
       </div>

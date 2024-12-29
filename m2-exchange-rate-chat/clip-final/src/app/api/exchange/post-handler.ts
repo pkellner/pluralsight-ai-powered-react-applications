@@ -56,7 +56,7 @@ export async function postHandler(req: Request) {
             console.log("Executing getExchangeRate:", from, to);
             const rate = await getExchangeRate({ from, to, conversionRates });
             return `The exchange rate from ${from} to ${to} is ${rate.toFixed(
-              6
+              6,
             )}.`;
           },
         },
@@ -79,7 +79,7 @@ export async function postHandler(req: Request) {
               conversionRates,
             });
             return `${amount} ${from} is equivalent to ${convertedAmount.toFixed(
-              2
+              2,
             )} ${to} at an exchange rate of ${rate.toFixed(6)}.`;
           },
         },

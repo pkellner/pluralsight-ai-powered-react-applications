@@ -1,6 +1,6 @@
-import {streamText, ToolInvocation} from "ai";
+import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import 'dotenv/config';
+import "dotenv/config";
 
 interface Message {
   role: "user" | "assistant";
@@ -8,18 +8,17 @@ interface Message {
 }
 
 async function main() {
-
-  const messages : Message[] = [
+  const messages: Message[] = [
     {
       role: "assistant",
       content: `You are an AI that provides responses based on the following rules:
       1. For currency conversions, assume $1 (USD) is equivalent to €0.5 (EUR).
-      2. If asked about any currency conversions other than USD to EUR, respond with "That's the only conversion I know."`
+      2. If asked about any currency conversions other than USD to EUR, respond with "That's the only conversion I know."`,
     },
     {
       role: "user",
-      content: `Convert $150 Dollars to Euros.`
-    }
+      content: `Convert $150 Dollars to Euros.`,
+    },
   ];
 
   const result = await streamText({
@@ -28,7 +27,7 @@ async function main() {
     messages, // Provide the messages array
   });
 
-  console.log("User: " + messages.find(msg => msg.role === "user")?.content);
+  console.log("User: " + messages.find((msg) => msg.role === "user")?.content);
 
   // Displaying the agent's response with label
   process.stdout.write("Agent: ");

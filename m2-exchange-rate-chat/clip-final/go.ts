@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import 'dotenv/config';
+import "dotenv/config";
 
 async function main() {
   // System type description to guide the AI
@@ -13,7 +13,7 @@ async function main() {
   const result = await streamText({
     model: openai("gpt-4"),
     temperature: 0.9,
-    prompt
+    prompt,
   });
 
   for await (const textPart of result.textStream) {

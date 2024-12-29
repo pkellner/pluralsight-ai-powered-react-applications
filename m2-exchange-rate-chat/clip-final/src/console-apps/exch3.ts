@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import 'dotenv/config';
+import "dotenv/config";
 
 async function main() {
   const system = `You are an AI that provides responses based on the following rules:
@@ -25,7 +25,6 @@ async function main() {
 }
 
 main().catch(console.error);
-
 
 /*
 The system parameter in your code comes from the ChatGPT API design rather than specifically from the ai-sdk. It is part of OpenAI's standard format for managing conversational context with the GPT models.
