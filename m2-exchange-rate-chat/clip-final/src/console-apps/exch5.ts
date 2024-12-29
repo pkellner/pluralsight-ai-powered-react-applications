@@ -5,7 +5,6 @@ import 'dotenv/config';
 interface Message {
   role: "user" | "assistant";
   content: string;
-  toolInvocations?: ToolInvocation[];
 }
 
 async function main() {
