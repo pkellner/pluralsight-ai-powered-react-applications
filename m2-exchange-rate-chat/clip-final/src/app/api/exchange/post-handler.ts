@@ -22,9 +22,9 @@ export async function postHandler(req: Request) {
 
   try {
     const { messages }: { messages: Message[] } = await req.json();
-
     const conversionRates = await getConversionRates();
 
+    // The critical fix: await the streamText promise.
     const result = streamText({
       model: openai("gpt-4"),
       system: `You are a financial assistant that specializes in currency information and conversion.
@@ -46,23 +46,21 @@ export async function postHandler(req: Request) {
       messages,
       tools: {
         getExchangeRate: {
-          description:
-            "Get the exchange rate between two currencies. This MUST be called FIRST for all currency queries.",
+          description: "Get the exchange rate between two currencies. This MUST be called FIRST for all currency queries.",
           parameters: z.object({
             from: z.string().describe("The source currency code (e.g., USD)"),
             to: z.string().describe("The target currency code (e.g., EUR)"),
           }),
-          execute: async ({ from, to }) => {
+          execute: async ({from, to}) => {
             console.log("Executing getExchangeRate:", from, to);
-            const rate = await getExchangeRate({ from, to, conversionRates });
+            const rate = await getExchangeRate({from, to, conversionRates});
             return `The exchange rate from ${from} to ${to} is ${rate.toFixed(
-              6,
+              6
             )}.`;
           },
         },
         convertCurrency: {
-          description:
-            "Convert an amount between currencies. This MUST be called SECOND, after getExchangeRate.",
+          description: "Convert an amount between currencies. This MUST be called SECOND, after getExchangeRate.",
           parameters: z.object({
             from: z.string().describe("The currency code to convert from"),
             to: z.string().describe("The currency code to convert to"),
@@ -70,28 +68,29 @@ export async function postHandler(req: Request) {
               .number()
               .describe("The amount to convert (use 1 if no amount specified)"),
           }),
-          execute: async ({ from, to, amount }) => {
+          execute: async ({from, to, amount}) => {
             console.log("Executing convertCurrency:", from, to, amount);
-            const { convertedAmount, rate } = await convertCurrency({
+            const {convertedAmount, rate} = await convertCurrency({
               from,
               to,
               amount,
               conversionRates,
             });
             return `${amount} ${from} is equivalent to ${convertedAmount.toFixed(
-              2,
+              2
             )} ${to} at an exchange rate of ${rate.toFixed(6)}.`;
           },
         },
       },
     });
+
+    // Return the streamed response
     return result.toDataStreamResponse();
   } catch (error) {
     console.error("Error in POST:", error);
     if (error instanceof Response) {
       return error;
     }
-
     return new Response(
       JSON.stringify({
         error: "Unknown error",
