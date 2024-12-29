@@ -42,14 +42,6 @@ export default function Page() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-
-      <div className="my-test-class">This is a test of my-test-class</div>
-
-      <div className="bg-blue-500 text-white text-center p-4 m-4 rounded-lg">
-        Tailwind CSS is working!
-      </div>
-
-
       <header className="p-4 bg-blue-600 text-white font-bold text-xl flex items-center justify-center">
         Currency Conversion Chat
       </header>
