@@ -13,7 +13,7 @@ export default function Page() {
     maxSteps: 5,
     onError(error) {
       setSystemError(
-        error.message + " Check your authorization keys in .env.local",
+        error.message + " Check your authorization keys in .env.local"
       );
     },
     onFinish() {
@@ -51,9 +51,10 @@ export default function Page() {
             {systemError}
           </div>
         )}
-        {messages.map(function (message, index) {
+        {messages.map((message, index) => {
           const htmlContent = marked(message.content);
           const safeHtml = DOMPurify.sanitize(htmlContent as string);
+
           return (
             <div
               key={index}
@@ -68,6 +69,27 @@ export default function Page() {
               ) : (
                 <div dangerouslySetInnerHTML={{ __html: safeHtml }} />
               )}
+
+              {/* Render tool invocation results if available */}
+              {message.toolInvocations?.map((toolInvocation, i2) => {
+                // If the toolInvocation has a 'result' property, show it
+                if ("result" in toolInvocation) {
+                  return (
+                    <div key={i2} className="mt-2 text-sm text-gray-800">
+                      <strong>Tool call:</strong> {toolInvocation.toolName}{" "}
+                      <br />
+                      {toolInvocation.result}
+                    </div>
+                  );
+                }
+
+                // If the tool hasn't returned a result yet, show "calling" placeholder
+                return (
+                  <div key={i2} className="mt-2 text-sm text-gray-800">
+                    <strong>Calling {toolInvocation.toolName}...</strong>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
