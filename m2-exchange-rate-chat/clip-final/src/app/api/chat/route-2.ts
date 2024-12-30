@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   const updatedMessages = [initialMessage, ...messages];
 
-  const result = streamText({
+  const result = await streamText({
     model: openai("gpt-4-turbo"),
     system: "You are a helpful assistant.",
     messages: updatedMessages,
