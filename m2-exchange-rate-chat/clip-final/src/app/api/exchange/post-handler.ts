@@ -24,11 +24,11 @@ export async function postHandler(req: Request) {
     const { messages }: { messages: Message[] } = await req.json();
     const conversionRates = await getConversionRates();
 
-    // Do NOT await this call — otherwise the stream is consumed before returning
+    // We need await here, so that the streaming process is properly set up
     const result = await streamText({
+      maxSteps: 5,
       experimental_toolCallStreaming: true,
       model: openai("gpt-4"),
-      maxSteps: 5,
       system: `You are a financial assistant that specializes in currency information and conversion.
         CRITICAL INSTRUCTIONS - YOU MUST FOLLOW THESE EXACTLY:
         1. For EVERY currency-related question, you MUST use BOTH tools in this exact order:
@@ -57,7 +57,9 @@ export async function postHandler(req: Request) {
           execute: async ({ from, to }) => {
             console.log("Executing getExchangeRate:", from, to);
             const rate = await getExchangeRate({ from, to, conversionRates });
-            return `The exchange rate from ${from} to ${to} is ${rate.toFixed(6)}.`;
+            return `The exchange rate from ${from} to ${to} is ${rate.toFixed(
+              6,
+            )}.`;
           },
         },
         convertCurrency: {
@@ -86,7 +88,8 @@ export async function postHandler(req: Request) {
       },
     });
 
-    // Return the streaming response directly
+    // 2) We can just return the Promise from .toDataStreamResponse()
+    //    rather than awaiting it again
     return result.toDataStreamResponse();
   } catch (error) {
     console.error("Error in POST:", error);
