@@ -1,5 +1,9 @@
 "use client";
 
+/*
+can talk about adding prompting in line for tool execution, can talk about logging internal tool calls based on authenticaion, can talk about adding a system error message, can talk about adding a maxSteps parameter, can talk about adding a maxDuration parameter, can talk about adding a system message on finish
+ */
+
 import { useChat } from "ai/react";
 import { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
