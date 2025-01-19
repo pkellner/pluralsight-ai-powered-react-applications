@@ -26,6 +26,9 @@ export function useChat(): UseChatReturn {
     content: string,
     onToken: (token: string) => void,
   ) {
+
+    messages.push({ role: "user", content });
+
     const result = streamText({
       model: openai("gpt-4"),
       temperature: 0.9,
