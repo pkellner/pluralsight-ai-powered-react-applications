@@ -4,7 +4,7 @@ console.log("Welcome to the AI console. Type 'exit' to quit.\n");
 process.stdout.write("> ");
 
 // get function that will process the prompt message and stream result
-const { sendMessage, messages } = useChat();
+const { sendMessage } = useChat();
 
 // process input typed into console
 process.stdin.on("data", async (data) => {
@@ -23,7 +23,6 @@ process.stdin.on("data", async (data) => {
     process.stdout.write(token);
   }
 
-  console.log("main.ts sendMessage called")
   await sendMessage(userInput, tokenFunction);
 
   // Move to a new line after the response is done
