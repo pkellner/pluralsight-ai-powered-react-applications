@@ -1,8 +1,9 @@
 "use client";
-import { useChat } from "ai/react";
+//import { useChat } from "ai/react";
 import { useRef, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
+import {useChat} from "./use-chat";
 
 export default function Page() {
 
