@@ -20,9 +20,8 @@ export function useChat(): UseChatReturn {
   ) {
     messages.push({ role: "user", content });
 
-    const assistantResponse = `You said: "${content}". Message count: ${
-      (messages.length - 1) / 2 + 1
-    }`;
+    const assistantResponse = `You said: "${content}". Message count: ${(messages.length - 1) / 2 + 1
+      }`;
     messages.push({ role: "assistant", content: assistantResponse });
 
     for (const token of assistantResponse.split(" ")) {
