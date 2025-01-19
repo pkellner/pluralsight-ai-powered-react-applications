@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: openai("gpt-4o"),
     system:
-      "You are an AI that provides responses based on users input. Only answer questions about currencies",
+      "You are an AI that provides responses based on users input.",
     messages,
   });
 

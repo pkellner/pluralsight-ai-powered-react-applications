@@ -8,7 +8,7 @@ import {useChat} from "./use-chat";
 export default function Page() {
 
   const { messages, input, setInput, append } = useChat({
-    api: "/api/test1",
+    api: "/api/chat",
     maxSteps: 5,
   });
 

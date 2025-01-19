@@ -17,7 +17,8 @@ interface UseChatReturn {
 export function useChat(): UseChatReturn {
   const messages: Message[] = [{
     role: "assistant",
-    content: "You are an AI that provides responses based on users",
+    content:
+      "You are an AI that provides responses based on users",
   }];
 
   async function sendMessage(

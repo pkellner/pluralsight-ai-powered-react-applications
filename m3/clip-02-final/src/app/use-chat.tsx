@@ -6,11 +6,6 @@ export interface Message {
   content: string;
 }
 
-interface UseChatOptions {
-  api?: string;
-  maxSteps?: number;
-}
-
 interface UseChatReturn {
   messages: Message[];
   input: string;
@@ -18,22 +13,22 @@ interface UseChatReturn {
   append: (message: Message) => void;
 }
 
-export function useChat(
-  { api = "/api/test1", maxSteps = Infinity }: UseChatOptions = {}
-): UseChatReturn {
+
+export function useChat(): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [userSteps, setUserSteps] = useState(0);
 
   async function streamAssistantReply(newMessages: Message[]) {
-    const res = await fetch(api, {
+    const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: newMessages }),
     });
     if (!res.body) return;
 
-    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+    setMessages((prev) => [...prev,
+    { role: "assistant", content: "" }]);
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let partial = "";
@@ -69,6 +64,7 @@ export function useChat(
   }
 
   function append(message: Message) {
+    const maxSteps = 5;
     setMessages((prev) => [...prev, message]);
     if (message.role === "user") {
       setUserSteps((prev) => prev + 1);
