@@ -20,16 +20,13 @@ interface UseChatReturn {
 
 export function useChat({
   api = "/api/test1",
-  maxSteps = 10,
+  maxSteps = Infinity,
 }: UseChatOptions = {}): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>("");
-
-  // Keep track of how many user messages we’ve sent, to limit with maxSteps
   const [userSteps, setUserSteps] = useState<number>(0);
 
   async function streamAssistantReply(newMessages: Message[]) {
-    // Make the request to your endpoint
     const res = await fetch(api, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -37,16 +34,15 @@ export function useChat({
     });
 
     if (!res.ok || !res.body) {
-      console.error("Failed to fetch assistant response");
+      console.error("Failed to fetch assistant response.");
       return;
     }
 
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
 
-    // Add a blank assistant message first (so UI can show a "Thinking..." placeholder)
+    // Insert a blank assistant message (so UI can show partial responses)
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
-
     let partialAssistantResponse = "";
 
     while (true) {
@@ -54,44 +50,63 @@ export function useChat({
       if (done) break;
       if (!value) continue;
 
-      // Decode the incoming chunk
-      partialAssistantResponse += decoder.decode(value);
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split("\n");
 
-      // Update the *last* message in state so the UI sees partial tokens
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
-        if (!last || last.role !== "assistant") {
-          return [
-            ...prev,
-            { role: "assistant", content: partialAssistantResponse },
-          ];
-        } else {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            ...last,
-            content: partialAssistantResponse,
-          };
-          return updated;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+
+        // Typically "0:" lines contain token text, "e:" or "d:" lines are metadata
+        const prefix = trimmed.slice(0, 2); // "0:", "e:", or "d:"
+        const content = trimmed.slice(2).trim();
+
+        // If it's a text token line like 0:"Hello"
+        if (prefix === "0:") {
+          let token = content;
+          // If the line is wrapped in quotes (e.g. `"Hello"`), remove them
+          if (token.startsWith('"') && token.endsWith('"')) {
+            token = token.slice(1, -1);
+          }
+          partialAssistantResponse += token;
+
+          // Update the last assistant message with the new partial text
+          setMessages((prev) => {
+            const updated = [...prev];
+            const last = updated[updated.length - 1];
+            if (!last || last.role !== "assistant") {
+              // Shouldn't happen if we inserted an assistant message, but just in case:
+              updated.push({
+                role: "assistant",
+                content: partialAssistantResponse,
+              });
+            } else {
+              updated[updated.length - 1] = {
+                ...last,
+                content: partialAssistantResponse,
+              };
+            }
+            return updated;
+          });
+        } else if (prefix === "e:" || prefix === "d:") {
+          // Typically usage data or finish reasons. Parse as needed:
+          // const data = JSON.parse(content);
+          // console.log("Event data:", data);
         }
-      });
+      }
     }
   }
 
   function append(message: Message) {
-    // Add this new message to state
-    setMessages((prev) => {
-      const next = [...prev, message];
-      return next;
-    });
-
-    // If it’s from the user, and we haven’t exceeded maxSteps, call the AI
+    setMessages((prev) => [...prev, message]);
     if (message.role === "user") {
+      // Count how many user messages we've appended
       setUserSteps((prev) => prev + 1);
+      // If we haven't hit maxSteps, fire off the assistant request
       if (userSteps < maxSteps) {
-        // We can’t rely on setMessages(updated) being synchronous,
-        // so gather the final set of messages ourselves:
-        const newMessages = [...messages, message];
-        void streamAssistantReply(newMessages);
+        // Because setMessages is async, gather final messages ourselves:
+        const newSet = [...messages, message];
+        void streamAssistantReply(newSet);
       }
     }
   }
