@@ -1,20 +1,16 @@
-//  what are the currencies in Africa
-//  what are their currency codes
-//  convert $100 US to Rand
-
-
 import { useChat } from "./use-chat";
 
 console.log("Welcome to the AI console. Type 'exit' to quit.\n");
 process.stdout.write("> ");
 
-// Create the chat instance
+// get function that will process the prompt message and stream result
 const { sendMessage } = useChat();
 
-// Handle user input
+// process input typed into console
 process.stdin.on("data", async (data) => {
   const userInput = data.toString().trim();
 
+  // check for user typing "exit" at prompt
   if (userInput.toLowerCase() === "exit") {
     console.log("Exiting...");
     process.exit(0);
@@ -22,11 +18,15 @@ process.stdin.on("data", async (data) => {
 
   process.stdout.write("Agent: ");
 
-  // Stream tokens as they arrive
-  await sendMessage(userInput, (token) => {
+  // send input and stream output
+  function tokenFunction(token: string) {
     process.stdout.write(token);
-  });
+  }
 
-  console.log(); // Move to a new line after the response is done
+  await sendMessage(userInput, tokenFunction);
+
+  // Move to a new line after the response is done
+  console.log();
+
   process.stdout.write("> ");
 });

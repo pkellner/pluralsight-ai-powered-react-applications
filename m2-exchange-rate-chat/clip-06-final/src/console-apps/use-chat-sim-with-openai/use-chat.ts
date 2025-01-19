@@ -1,0 +1,51 @@
+import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
+
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
+
+interface UseChatReturn {
+  sendMessage: (
+    content: string,
+    onToken: (token: string) => void,
+  ) => Promise<void>;
+  messages: Message[];
+}
+
+export function useChat(): UseChatReturn {
+  const messages: Message[] = [
+    {
+      role: "assistant",
+      content: `You are an AI that provides responses based on users input`,
+    },
+  ];
+
+  async function sendMessage(
+    content: string,
+    onToken: (token: string) => void,
+  ) {
+    const result = streamText({
+      model: openai("gpt-4"),
+      temperature: 0.9,
+      messages,
+    });
+
+    let assistantResponse = "";
+
+    messages.push({ role: "assistant", content: assistantResponse });
+
+    for await (const textPart of result.textStream) {
+      assistantResponse += textPart;
+      // Provide a callback so we can stream tokens in real time
+      if (onToken) {
+        onToken(textPart);
+      }
+    }
+  }
+  return {
+    messages,
+    sendMessage,
+  };
+}
