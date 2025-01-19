@@ -2,8 +2,6 @@ import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import "dotenv/config";
 
-// add some prior knowledge to the AI and stream
-
 async function main() {
   // System type description to guide the AI
   const systemTypeDescription = `You are an AI that provides responses based on the following rules:
