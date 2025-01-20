@@ -30,20 +30,26 @@ export async function POST(req: Request) {
           countryName: z.string().describe("The full name of the country"),
         }),
         execute: async ({ countryName }: { countryName: string }) => {
-          const normalizedName = countryName.trim().toLowerCase();
-          const code = countryCodes[normalizedName];
+          try {
+            const code = await getCountryCodes({ countryName });
+            if (!code) {
+              return {
+                result: `I apologize, but "${countryName}" is not in our supported countries list. Currently, we only support conversions for: ${Object.keys(
+                  countryCodes,
+                ).join(", ")}.`,
+              };
+            }
 
-          if (!code) {
             return {
-              result: `I apologize, but "${countryName}" is not in our supported countries list. Currently, we only support conversions for: ${Object.keys(
-                countryCodes,
-              ).join(", ")}.`,
+              result: code,
+            };
+          } catch (error: unknown) {
+            return {
+              result: `An error occurred while fetching the country code for "${countryName}". ${
+                error instanceof Error ? error.message : ""
+              }`,
             };
           }
-
-          return {
-            result: code,
-          };
         },
       },
 
@@ -87,8 +93,8 @@ export async function POST(req: Request) {
 
 const countryCodes: Record<string, string> = {
   "united states": "USD",
-  "canada": "CAD",
-  "mexico": "MXN",
+  canada: "CAD",
+  mexico: "MXN",
 };
 
 const exchangeRates: Record<string, Record<string, number>> = {
@@ -96,7 +102,6 @@ const exchangeRates: Record<string, Record<string, number>> = {
   MXN: { MXN: 1, USD: 0.0606, CAD: 0.0794 },
   CAD: { CAD: 1, USD: 0.7634, MXN: 12.5954 },
 };
-
 
 async function getExchangeRate({
   from,
@@ -114,4 +119,13 @@ async function getExchangeRate({
   }
 
   return exchangeRates[from][to];
+}
+
+async function getCountryCodes({
+  countryName,
+}: {
+  countryName: string;
+}): Promise<string | null> {
+  const normalizedName = countryName.trim().toLowerCase();
+  return countryCodes[normalizedName] || null;
 }
