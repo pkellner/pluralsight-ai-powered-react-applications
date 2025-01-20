@@ -87,17 +87,16 @@ export async function POST(req: Request) {
 
 const countryCodes: Record<string, string> = {
   "united states": "USD",
-  canada: "CAD",
-  mexico: "MXN",
-  australia: "AUD",
-  // Add more as needed
+  "canada": "CAD",
+  "mexico": "MXN",
 };
 
 const exchangeRates: Record<string, Record<string, number>> = {
-  USD: { USD: 1, MXN: 18.5, CAD: 1.32 },
-  MXN: { MXN: 1, USD: 0.054, CAD: 0.073 },
-  CAD: { CAD: 1, USD: 0.71, MXN: 13.7 },
+  USD: { USD: 1, MXN: 16.5, CAD: 1.31 },
+  MXN: { MXN: 1, USD: 0.0606, CAD: 0.0794 },
+  CAD: { CAD: 1, USD: 0.7634, MXN: 12.5954 },
 };
+
 
 async function getExchangeRate({
   from,
