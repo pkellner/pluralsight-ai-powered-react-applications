@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     messages,
     tools: {
       getExchangeRate: {
-        description: "Getthe exchange rate between two currencies (USD,MXN,CAD only).",
+        description: "Get the exchange rate between two currencies (USD,MXN,CAD only).",
         parameters: {
           from: { type: "string", description: "The currency code to convert from" },
           to: { type: "string", description: "The currency code to convert to" },
