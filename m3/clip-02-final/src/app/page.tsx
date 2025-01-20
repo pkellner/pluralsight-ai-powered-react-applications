@@ -1,9 +1,9 @@
 "use client";
-//import { useChat } from "ai/react";
+
 import { useRef, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import {useChat} from "./use-chat";
+import { useChat } from "ai/react";
 
 export default function Page() {
 
@@ -23,8 +23,6 @@ export default function Page() {
 
   function handleSend() {
     if (!input.trim()) return;
-
-    // Append the user's input
     append({ content: input, role: "user" });
     setInput("");
     if (inputRef.current) {
@@ -35,7 +33,7 @@ export default function Page() {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <header className="p-4 bg-blue-600 text-white font-bold text-xl flex items-center justify-center">
-        Currency Conversion Chat
+        Currency Exchange Chatbot
       </header>
       <main ref={mainRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map(function (message, index) {
