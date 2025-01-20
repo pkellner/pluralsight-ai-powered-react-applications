@@ -1,5 +1,6 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
+import { z } from "zod";
 
 interface Message {
   role: "user" | "assistant";
@@ -25,51 +26,39 @@ export async function POST(req: Request) {
     messages,
     tools: {
       getExchangeRate: {
-        description: "Get the exchange rate between two currencies (USD,MXN,CAD only).",
-        parameters: {
-          from: { type: "string", description: "The currency code to convert from" },
-          to: { type: "string", description: "The currency code to convert to" },
-        },
-        execute: async ({ from, to }: { from: string; to: string }) => {
-          const validCurrencies = ["USD", "MXN", "CAD"];
-          if (!validCurrencies.includes(from) || !validCurrencies.includes(to)) {
-            return `Invalid currency code. Please use only USD, MXN, or CAD.`;
-          }
+        description: "Get the exchange rate between two currencies",
+        parameters: z.object({
+          from: z.string().describe("The currency code to convert from"),
+          to: z.string().describe("The currency code to convert to"),
+        }),
+        execute: async ({ from, to }) => {
           const rate = await getExchangeRate({ from, to });
-          return `The exchange rate from ${from} to ${to} is ${rate.toFixed(6)}.`;
+          return `The exchange rate from ${from} to ${to} is ${rate.toFixed(
+            6,
+          )}.`;
         },
       },
       convertCurrency: {
-        description: "Convert an amount of money between two currencies (USD, MXN, CAD only)",
-        parameters: {
-          from: { type: "string", description: "The currency code to convert from" },
-          to: { type: "string", description: "The currency code to convert to" },
-          amount: { type: "number", description: "The amount of money to convert" },
-        },
-        execute: async ({
-          from,
-          to,
-          amount,
-        }: {
-          from: string;
-          to: string;
-          amount: number;
-        }) => {
-          const validCurrencies = ["USD", "MXN", "CAD"];
-          if (!validCurrencies.includes(from) || !validCurrencies.includes(to)) {
-            return `Invalid currency code. Please use only USD, MXN, or CAD.`;
-          }
+        description: "Convert an amount of money between two currencies",
+        parameters: z.object({
+          from: z.string().describe("The currency code to convert from"),
+          to: z.string().describe("The currency code to convert to"),
+          amount: z.number().describe("The amount of money to convert"),
+        }),
+        execute: async ({ from, to, amount }) => {
           const { convertedAmount, rate } = await convertCurrency({
             from,
             to,
             amount,
           });
           return `${amount} ${from} is equivalent to ${convertedAmount.toFixed(
-            2
+            2,
           )} ${to} at an exchange rate of ${rate.toFixed(6)}.`;
         },
       },
-    }
+    },
+
+
   });
 
   return result.toDataStreamResponse();
@@ -82,11 +71,14 @@ async function getExchangeRate({
   from: string;
   to: string;
 }): Promise<number> {
+
+  console.log("getExchangeRate: from,to:",from,to)
+
   // Hardcoded exchange rates (guesses based on recent rates)
   const exchangeRates: Record<string, Record<string, number>> = {
-    USD: { USD: 1, MXN: 18.5, CAD: 1.35 },
+    USD: { USD: 1, MXN: 18.5, CAD: 1.36 },
     MXN: { MXN: 1, USD: 0.054, CAD: 0.073 },
-    CAD: { CAD: 1, USD: 0.74, MXN: 13.7 },
+    CAD: { CAD: 1, USD: 0.71, MXN: 13.7 },
   };
 
   if (from === to) {
@@ -109,9 +101,12 @@ async function convertCurrency({
   to: string;
   amount: number;
 }): Promise<{ convertedAmount: number; rate: number }> {
+
+  console.log("/convertCurrency: from,to,amount:", from,to,amount);
+
   // Hardcoded exchange rates (guesses based on recent rates)
   const exchangeRates: Record<string, Record<string, number>> = {
-    USD: { USD: 1, MXN: 18.5, CAD: 1.35 },
+    USD: { USD: 1, MXN: 18.5, CAD: 1.37 },
     MXN: { MXN: 1, USD: 0.054, CAD: 0.073 },
     CAD: { CAD: 1, USD: 0.74, MXN: 13.7 },
   };
