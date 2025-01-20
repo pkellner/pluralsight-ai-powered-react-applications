@@ -1,11 +1,15 @@
 "use server";
 
+// This action is for a real IMAP email server and is not part of the course.
+// It is used to fetch emails from an IMAP server and analyze their sentiment.
+// It is here for you to experiment with and see how it works.
+// check the import section of the /src/app/page.tsx file to see how it is used.
+
 import { FetchMessageObject, ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { Email } from "@/app/types/app-types";
 import { analyzeSentiment } from "@/app/analyze-sentiment";
 import { summarizeContent } from "@/app/summarize-content";
-import { analyzeSentimentWithSchema } from "@/app/analyze-sentiment-with-schema";
 
 export async function getEmails(
   maxCnt: number = 10,
@@ -113,7 +117,7 @@ export async function getEmails(
 export async function updateEmailWithSentimentAndSummary(
   email: Email,
 ): Promise<Email> {
-  const sentiment = await analyzeSentimentWithSchema(email.body);
+  const sentiment = await analyzeSentiment(email.body);
   const summary = await summarizeContent(email.body);
 
   return {
