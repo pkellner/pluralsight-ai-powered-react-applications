@@ -1,6 +1,8 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { z } from "zod";
+import { getCountryCodes } from './get-country-codes';
+import { getExchangeRate } from './get-exchange-rate';
+import { z } from 'zod';
 
 interface Message {
   role: "user" | "assistant";
@@ -21,38 +23,32 @@ export async function POST(req: Request) {
         6. When a currency or country is not supported, clearly state this and end the response.
         7. Do not make assumptions or offer alternative conversions when data is unavailable.
         8. Use polite and professional language in all interactions.
+        9. Only provide information about currencies from US, Mexico, and Canada.
     `,
     messages,
     tools: {
       lookupCountryCode: {
-        description: "Look up a country code by a country name",
+        description: "Look up a country code by a country",
         parameters: z.object({
-          countryName: z.string().describe("The full name of the country"),
+          countryName: z.string().describe("The full nbame of the country"),
         }),
         execute: async ({ countryName }: { countryName: string }) => {
-          try {
-            const code = await getCountryCodes({ countryName });
-            if (!code) {
-              return {
-                result: `I apologize, but "${countryName}" is not in our supported countries list. Currently, we only support conversions for: ${Object.keys(
-                  countryCodes,
-                ).join(", ")}.`,
-              };
+          const normalizedName = countryName.trim().toLowerCase();
+          const countryCodes = await getCountryCodes();
+          const code = countryCodes[normalizedName];
+          if (!code) {
+            const known = Object.entries(countryCodes)
+              .map(([country, countryCode]) => `${country} => ${countryCode}`)
+              .join(", ");
+            return {
+              result: `We don't have a known currency or country code for "${countryName}". Codes are: ${known}.`,
             }
-
-            return {
-              result: code,
-            };
-          } catch (error: unknown) {
-            return {
-              result: `An error occurred while fetching the country code for "${countryName}". ${
-                error instanceof Error ? error.message : ""
-              }`,
-            };
           }
-        },
+          return {
+            result: `The country code for "${countryName}" is "${code}"`,
+          }
+        }
       },
-
       getExchangeRate: {
         description: "Get the exchange rate between two currencies",
         parameters: z.object({
@@ -68,64 +64,16 @@ export async function POST(req: Request) {
               )}.`,
             };
           } catch (error: unknown) {
-            if (error instanceof Error) {
-              return {
-                result: `${
-                  error.message
-                }. Only the following currencies are supported: ${Object.keys(
-                  exchangeRates,
-                ).join(", ")}.`,
-              };
-            }
             return {
-              result: `An unexpected error occurred. Only the following currencies are supported: ${Object.keys(
-                exchangeRates,
-              ).join(", ")}.`,
+              result: `Unable to retrieve the exchange rate from ${from} to ${to}. 
+                  Please check if the currencies are valid. ${error instanceof Error ? error.message : ""
+                }`,
             };
           }
         },
       },
-    },
+    }
   });
 
   return result.toDataStreamResponse();
-}
-
-const countryCodes: Record<string, string> = {
-  "united states": "USD",
-  canada: "CAD",
-  mexico: "MXN",
-};
-
-const exchangeRates: Record<string, Record<string, number>> = {
-  USD: { USD: 1, MXN: 16.5, CAD: 1.31 },
-  MXN: { MXN: 1, USD: 0.0606, CAD: 0.0794 },
-  CAD: { CAD: 1, USD: 0.7634, MXN: 12.5954 },
-};
-
-async function getExchangeRate({
-  from,
-  to,
-}: {
-  from: string;
-  to: string;
-}): Promise<number> {
-  if (from === to) {
-    return 1;
-  }
-
-  if (!exchangeRates[from] || !exchangeRates[from][to]) {
-    throw new Error(`Exchange rate not available for ${from} to ${to}`);
-  }
-
-  return exchangeRates[from][to];
-}
-
-async function getCountryCodes({
-  countryName,
-}: {
-  countryName: string;
-}): Promise<string | null> {
-  const normalizedName = countryName.trim().toLowerCase();
-  return countryCodes[normalizedName] || null;
 }
