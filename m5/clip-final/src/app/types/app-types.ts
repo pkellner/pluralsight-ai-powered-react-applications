@@ -1,5 +1,3 @@
-
-
 export type Sentiment =
   | "Promotional"
   | "Personal"
@@ -9,8 +7,6 @@ export type Sentiment =
   | "Appreciative"
   | "Complimentary"
   | "Pending";
-
-
 
 export const sentimentEmojis: { [key in Sentiment]: string } = {
   Angry: "😡",
@@ -31,7 +27,7 @@ export interface Email {
   body: string;
   receivedDate: Date;
   sentiment: Sentiment;
-  summary: string
+  summary: string;
   isHtml: boolean;
   seen?: boolean;
 }

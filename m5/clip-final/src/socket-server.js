@@ -1,8 +1,13 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+// // eslint-disable-next-line @typescript-eslint/no-require-imports
+// const { createServer } = require("http");
+// // eslint-disable-next-line @typescript-eslint/no-require-imports
+// const { Server } = require("socket.io");
+// // eslint-disable-next-line @typescript-eslint/no-require-imports
+// const mockEmailsIncoming = require("./app/get-emails-mock-database/mock-emails-incoming");
 
-const mockEmailsIncoming = require("./app/get-emails-mock-database/mock-emails-incoming");
+import { createServer } from "http";
+import { Server } from "socket.io";
+import mockEmailsIncoming from "./app/get-emails-mock-database/mock-emails-incoming.js";
 
 console.log("Mock emails incoming count:", mockEmailsIncoming.length);
 

@@ -1,6 +1,6 @@
-import {z} from "zod";
-import {generateText} from "ai";
-import {openai} from "@ai-sdk/openai";
+import { z } from "zod";
+import { generateText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
 export const SentimentSchema = z.enum([
   "Promotional",
@@ -36,9 +36,13 @@ export async function analyzeSentiment(body: string): Promise<Sentiment> {
 
   try {
     sentiment = SentimentSchema.parse(sentimentResponse.text.trim());
-    //console.log("Valid sentiment response:", "Sentiment:", sentiment, "Response:", sentimentResponse.text);
-  } catch (error) {
-    console.error("Invalid sentiment response:", sentimentResponse.text);
+  } catch (error: unknown) {
+    console.error(
+      `Invalid sentiment response: ${
+        error instanceof Error ? error.message : ""
+      }`,
+      sentimentResponse.text,
+    );
   }
 
   return sentiment;

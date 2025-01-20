@@ -5,23 +5,25 @@ import { simpleParser } from "mailparser";
 import { Email } from "@/app/types/app-types";
 import { analyzeSentiment } from "@/app/analyze-sentiment";
 import { summarizeContent } from "@/app/summarize-content";
+import { analyzeSentimentWithSchema } from "@/app/analyze-sentiment-with-schema";
 
-export async function fetchImapEmails(): Promise<
-  (Email & { isHtml: boolean })[]
-> {
+export async function getEmails(
+  maxCnt: number = 10,
+): Promise<(Email & { isHtml: boolean })[]> {
   const client = new ImapFlow({
     host: "imap.mail.me.com",
     port: 993,
     secure: true,
     auth: {
-      user: "svcodecamp@icloud.com",
-      pass: process.env.SVCODECAMP_PASSWORD,
+      user: process.env?.IMAP_USER ?? "unknown",
+      pass: process.env?.IMAP_PASSWORD ?? "unknown",
     },
     logger: false,
   });
 
   const sinceDate = new Date();
-  sinceDate.setHours(sinceDate.getHours() - 1);
+  const hoursToGoBack = 3;
+  sinceDate.setHours(sinceDate.getHours() - hoursToGoBack);
 
   const emails: (Email & { isHtml: boolean })[] = [];
 
@@ -38,6 +40,7 @@ export async function fetchImapEmails(): Promise<
         envelope: true, // Fetch message envelope
         source: true, // Fetch the raw MIME source
         flags: true, // Include flags to check MIME content type
+        bodyStructure: true, // Include body structure to check MIME content type
       }) as AsyncIterable<FetchMessageObject>) {
         allMessages.push(message);
       }
@@ -104,5 +107,19 @@ export async function fetchImapEmails(): Promise<
     }),
   );
 
-  return analyzedEmails as Email[];
+  return analyzedEmails?.slice(maxCnt) as Email[];
+}
+
+export async function updateEmailWithSentimentAndSummary(
+  email: Email,
+): Promise<Email> {
+  const sentiment = await analyzeSentimentWithSchema(email.body);
+  const summary = await summarizeContent(email.body);
+
+  return {
+    ...email,
+    seen: false,
+    sentiment,
+    summary,
+  };
 }

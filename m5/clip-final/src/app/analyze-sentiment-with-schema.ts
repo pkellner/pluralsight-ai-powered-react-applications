@@ -20,7 +20,9 @@ type Sentiment = z.infer<typeof SentimentSchema>;
  * @param body - The email body to analyze.
  * @returns The determined sentiment.
  */
-export async function analyzeSentimentWithSchema(body: string): Promise<Sentiment> {
+export async function analyzeSentimentWithSchema(
+  body: string,
+): Promise<Sentiment> {
   // Use Zod to define the schema for the AI response
   const SentimentResponseSchema = z.object({
     sentiment: SentimentSchema,
@@ -35,7 +37,9 @@ export async function analyzeSentimentWithSchema(body: string): Promise<Sentimen
     });
 
     // Parse and validate the AI response using Zod
-    const parsedResponse = SentimentResponseSchema.parse(sentimentResponse.object);
+    const parsedResponse = SentimentResponseSchema.parse(
+      sentimentResponse.object,
+    );
 
     console.log("Valid sentiment response:", parsedResponse);
 

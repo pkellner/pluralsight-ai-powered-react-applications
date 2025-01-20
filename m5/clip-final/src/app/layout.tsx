@@ -1,5 +1,4 @@
 "use client";
-import type { Metadata } from "next";
 import { usePathname } from "next/navigation"; // Import usePathname hook
 import "./globals.css";
 import Link from "next/link";
