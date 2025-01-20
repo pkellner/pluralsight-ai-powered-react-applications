@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useChat } from "./use-chat";
 
 console.log("Welcome to the AI console. Type 'exit' to quit.\n");
