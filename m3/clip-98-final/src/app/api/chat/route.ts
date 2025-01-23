@@ -27,7 +27,7 @@ export async function POST(req: Request) {
         8. Use polite and professional language in all interactions.
         9. Only provide information about currencies from 
            ${countryCodesString},
-        10. Always show the exchange rate when using in a conversation.
+        10. Always show the exchange rate when using it in a conversation.
     `;
 
   const result = streamText({
