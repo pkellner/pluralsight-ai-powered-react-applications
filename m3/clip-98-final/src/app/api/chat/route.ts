@@ -23,7 +23,8 @@ export async function POST(req: Request) {
         6. When a currency or country is not supported, clearly state this and end the response.
         7. Do not make assumptions or offer alternative conversions when data is unavailable.
         8. Use polite and professional language in all interactions.
-        9. Only provide information about currencies from US, Mexico, and Canada.
+        9. Only provide information about currencies from US, Mexico, Canada, Europe and Switzerland.
+        10. Always show the exchange rate when using in a conversation.
     `,
     messages,
     tools: {
