@@ -9,7 +9,6 @@ export default function Page() {
 
   const { messages, input, setInput, append } = useChat({
     api: "/api/chat",
-    //maxSteps: 5,
   });
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,7 +32,7 @@ export default function Page() {
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       <header className="p-4 bg-blue-600 text-white font-bold text-xl flex items-center justify-center">
-        Currency Exchange Chatbot
+        General Purpose Chatbot
       </header>
       <main ref={mainRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map(function (message, index) {

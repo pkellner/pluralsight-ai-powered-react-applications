@@ -1,18 +1,12 @@
 "use client";
 import { useState } from "react";
-
-export interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
-
+export interface Message { role: "user" | "assistant"; content: string; }
 interface UseChatReturn {
   messages: Message[];
   input: string;
   setInput: (value: string) => void;
   append: (message: Message) => void;
 }
-
 export function useChat(): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
