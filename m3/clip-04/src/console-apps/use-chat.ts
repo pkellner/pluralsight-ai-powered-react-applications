@@ -1,6 +1,9 @@
 import { openai } from "@ai-sdk/openai";
 import { streamText } from "ai";
-export interface Message { role: "user" | "assistant"; content: string; }
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
 interface UseChatReturn {
   sendMessage: (content: string, onToken: (token: string) => void) => Promise<void>;
   messages: Message[];

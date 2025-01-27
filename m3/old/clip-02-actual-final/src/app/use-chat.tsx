@@ -13,7 +13,6 @@ interface UseChatReturn {
   append: (message: Message) => void;
 }
 
-
 export function useChat(): UseChatReturn {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -27,8 +26,7 @@ export function useChat(): UseChatReturn {
     });
     if (!res.body) return;
 
-    setMessages((prev) => [...prev,
-    { role: "assistant", content: "" }]);
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let partial = "";

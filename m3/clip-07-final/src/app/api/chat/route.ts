@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { getCountryCodes } from './get-country-codes';
+import { getCountryCodes } from "./get-country-codes";
 
 interface Message {
   role: "user" | "assistant";

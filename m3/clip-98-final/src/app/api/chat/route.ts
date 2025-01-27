@@ -1,8 +1,8 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { getCountryCodes } from './get-country-codes';
-import { getExchangeRate } from './get-exchange-rate';
-import { z } from 'zod';
+import { getCountryCodes } from "./get-country-codes";
+import { getExchangeRate } from "./get-exchange-rate";
+import { z } from "zod";
 
 interface Message {
   role: "user" | "assistant";
@@ -50,12 +50,12 @@ export async function POST(req: Request) {
             return {
               result: `We don't have a known currency or country code for 
                 "${countryName}". Codes are: ${known}.`,
-            }
+            };
           }
           return {
             result: `The country code for "${countryName}" is "${code}"`,
-          }
-        }
+          };
+        },
       },
       getExchangeRate: {
         description: "Get the exchange rate between two currencies",
@@ -75,13 +75,12 @@ export async function POST(req: Request) {
               result: `Unable to retrieve the exchange rate 
                   from ${from} to ${to}. 
                   Please check if the currencies are valid. 
-                  ${error instanceof Error ? error.message : ""
-                }`,
+                  ${error instanceof Error ? error.message : ""}`,
             };
           }
         },
       },
-    }
+    },
   });
 
   return result.toDataStreamResponse();

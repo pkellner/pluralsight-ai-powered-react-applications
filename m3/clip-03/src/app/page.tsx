@@ -3,10 +3,9 @@
 import { useRef, useEffect } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import {useChat} from "./use-chat";
+import { useChat } from "./use-chat";
 
 export default function Page() {
-
   const { messages, input, setInput, append } = useChat();
 
   const inputRef = useRef<HTMLInputElement>(null);

@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
-export interface Message { role: "user" | "assistant"; content: string; }
+export interface Message {
+  role: "user" | "assistant";
+  content: string;
+}
 interface UseChatReturn {
   messages: Message[];
   input: string;

@@ -6,7 +6,6 @@ import DOMPurify from "dompurify";
 import { useChat } from "ai/react";
 
 export default function Page() {
-
   const { messages, input, setInput, append } = useChat({
     api: "/api/chat",
     maxSteps: 5,
