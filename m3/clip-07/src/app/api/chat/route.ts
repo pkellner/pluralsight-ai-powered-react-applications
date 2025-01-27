@@ -1,6 +1,7 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { getCountryCodes } from "./get-country-codes";
+import { z } from "zod";
 
 interface Message {
   role: "user" | "assistant";
@@ -14,6 +15,28 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: openai("gpt-4"),
+    tools: {
+      lookupCountryCode: {
+        description: "Look up a country code by country",
+        parameters: z.object({
+          countryName: z.string().describe("The full name of the country"),
+        }),
+        execute: async ({ countryName }: { countryName: string }) => {
+          const normalizedName = countryName.trim().toLowerCase();
+          const code = countryCodes[normalizedName];
+          if (!code) {
+            return {
+              result: `We do not have a known currency or country code for 
+                "${countryName}". Codes are ${countryCodesString}.`,
+            }
+          } else {
+            return ({
+              result: `The country code for "${countryName}" is "${code}"`,
+            })
+          }
+        }
+      },
+    },
     system: `
         1. Provide responses based on user input.
         2. Specialize in currency exchange-related questions only.
