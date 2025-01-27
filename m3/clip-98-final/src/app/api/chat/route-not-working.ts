@@ -29,13 +29,13 @@ export async function POST(req: Request) {
             return {
               result: `We do not have a known currency or country code for 
                 "${countryName}". Codes are ${countryCodesString}.`,
-            }
+            };
           } else {
-            return ({
+            return {
               result: `The country code for "${countryName}" is "${code}"`,
-            })
+            };
           }
-        }
+        },
       },
       getExchangeRate: {
         description: "Get the exchange rate between two currencies",
@@ -53,11 +53,11 @@ export async function POST(req: Request) {
             return {
               result: `unable to retrieve the exchange rate from ${from} to ${to}.
                 Please check if the currencies are valid.
-                ${error instanceof Error ? error.message : ""}`
-            }
+                ${error instanceof Error ? error.message : ""}`,
+            };
           }
-        }
-      }
+        },
+      },
     },
     system: `
         1. Provide responses based on user input.
