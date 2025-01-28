@@ -6,9 +6,10 @@ import DOMPurify from "dompurify";
 import { useChat } from "ai/react";
 
 export default function Page() {
-  
-  const { messages, input, setInput, append } = useChat(
-    {api: "/api/chat", maxSteps: 5});
+  const { messages, input, setInput, append } = useChat({
+    api: "/api/chat",
+    maxSteps: 5,
+  });
   const inputRef = useRef<HTMLInputElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,6 @@ export default function Page() {
       <main ref={mainRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map(function (message, index) {
           const htmlContent = marked(message.content);
-          console.log(message.content ? message.content : "no-message-content")
           const safeHtml = DOMPurify.sanitize(htmlContent as string);
           return (
             <div
