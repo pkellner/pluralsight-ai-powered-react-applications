@@ -1,5 +1,4 @@
 "use client";
-
 import React, { ReactElement, useState } from "react";
 import {generateAds} from "./actions/generate-images";
 
@@ -50,13 +49,8 @@ export default function AdGenerator(): ReactElement {
       alert("Please select a holiday and a product.");
       return;
     }
-
-    setAds(null);
-    setProgress(1);
-    setLoading(true);
-
+    setAds(null); setProgress(1); setLoading(true);
     try {
-
       const adsArray: Ad[] = [];
       const totalAds = 3;
       const promises = Array.from({ length: totalAds }, (_, index) =>

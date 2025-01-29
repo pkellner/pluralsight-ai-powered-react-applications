@@ -4,19 +4,9 @@ import { experimental_generateImage as generateImage } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
-// Define the allowed values using zod
 const StyleSchema = z.enum(["vivid", "natural"]).optional();
 const QualitySchema = z.enum(["standard", "hd"]).optional();
 
-/**
- * Generates advertisements for a product based on the given parameters.
- * @param holiday - The holiday theme for the advertisement.
- * @param productName - The name of the product to advertise.
- * @param style - The style of the image to generate (e.g. realistic, cartoon, etc.).
- * @param quality - The quality of the image to generate (e.g. high, medium, low).
- * @param instructions - Additional instructions for the generation process.
- * @returns An array of objects containing the generated images.
- */
 export async function generateAds(
   holiday: string,
   productName: string,
@@ -25,7 +15,6 @@ export async function generateAds(
   instructions?: string,
 ): Promise<{ image: string }[]> {
   
-  // Validate the optional parameters using zod
   StyleSchema.parse(style);
   QualitySchema.parse(quality);
 
@@ -60,8 +49,6 @@ export async function generateAds(
         },
       },
     });
-
-    // return just the image base64 encoded
     return images.map((image) => ({
       image: image.base64 || "",
     }));
