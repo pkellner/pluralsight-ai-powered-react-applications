@@ -5,7 +5,7 @@ import { simpleParser } from "mailparser";
 import { Email } from "@/app/types/app-types";
 import { analyzeSentiment } from "@/app/ai/analyze-sentiment";
 import { summarizeContent } from "@/app/ai/summarize-content";
-import { analyzeSentimentWithSchema } from "@/app/ai/analyze-sentiment-with-schema";
+import { analyzeSentimentWithSchema } from "@/app/analyze-sentiment-with-schema";
 
 export async function getEmails(
   maxCnt: number = 10,

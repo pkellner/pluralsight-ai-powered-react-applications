@@ -2,8 +2,8 @@
 
 import { mockEmails } from "@/app/get-emails-mock-database/mock-emails";
 import { Email } from "@/app/types/app-types";
-import { summarizeContent } from "@/app/ai/summarize-content";
-import { analyzeSentimentWithSchema } from "@/app/ai/analyze-sentiment-with-schema";
+import { summarizeContent } from "@/app/summarize-content";
+import { analyzeSentimentWithSchema } from "@/app/analyze-sentiment-with-schema";
 
 export async function getEmails(maxCnt: number = 10): Promise<Email[]> {
   const analyzedEmails = await Promise.all(
@@ -13,7 +13,7 @@ export async function getEmails(maxCnt: number = 10): Promise<Email[]> {
 
       return {
         ...email,
-        seen: false,
+        seen: true,
         sentiment,
         summary,
       };

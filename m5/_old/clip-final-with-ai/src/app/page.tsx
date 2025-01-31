@@ -12,20 +12,19 @@ import "react-tooltip/dist/react-tooltip.css";
 
 import {
   getEmails,
-  updateEmailWithSentimentAndSummary,
 } from "@/app/get-emails-mock-database/actions";
 
 // If you comment the code above and uncomment the next 4 lines, then you can
 // get data from a real IMAP server. Look at the file /src/app/get-emails-imap/actions.ts for more details
 // import {
 //   getEmails,
-//   updateEmailWithSentimentAndSummary,
 // } from "@/app/get-emails-imap/actions";
+
 import { Email, Sentiment, sentimentEmojis } from "@/app/types/app-types";
 import { io, Socket } from "socket.io-client";
-import { IconMail, IconMailOpened } from "@tabler/icons-react";
-import { IconCheck, IconX } from "@tabler/icons-react";
+import { IconCheck, IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
 import InBoxListPlaceHolder from "@/app/inbox-list-place-holder";
+import {updateEmailWithSentimentAndSummary} from "@/app/ai/update-email-with-sentiment-and-summary";
 
 export default function InboxApp(): ReactElement {
   const [emails, setEmails] = useState<Email[]>([]);
@@ -112,7 +111,7 @@ export default function InboxApp(): ReactElement {
   function handleRowClick(emailId: string) {
     setSelectedEmailId(emailId);
 
-    // Mark the clicked email as not seen
+    // Mark the clicked email as seen
     setEmails((prevEmails) =>
       prevEmails.map((em) => (em.id === emailId ? { ...em, seen: true } : em)),
     );
@@ -219,9 +218,9 @@ export default function InboxApp(): ReactElement {
                   {/* Indicator for whether the email has been seen */}
                   <div className="text-xl">
                     {email.seen ? (
-                      <IconMailOpened className="text-green-600" size={20} />
+                      <IconEye className="text-green-600" size={20} />
                     ) : (
-                      <IconMail className="text-gray-400" size={20} />
+                      <IconEyeOff className="text-gray-400" size={20} />
                     )}
                   </div>
                   <div
