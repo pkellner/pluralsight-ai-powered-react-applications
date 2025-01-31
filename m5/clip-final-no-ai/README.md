@@ -1,6 +1,6 @@
 # React AI Course
 
-All that has to be done here is update the two methods, analyze-sentiment.ts and summarie-conent.ts
+All that has to be done here is update the two methods, analyze-sentiment.ts and summarize-content.ts
 
 currently, all defaults to pending with a summary that shows body length
 

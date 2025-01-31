@@ -12,19 +12,19 @@ import "react-tooltip/dist/react-tooltip.css";
 
 import {
   getEmails,
-  updateEmailWithSentimentAndSummary,
 } from "@/app/get-emails-mock-database/actions";
 
 // If you comment the code above and uncomment the next 4 lines, then you can
 // get data from a real IMAP server. Look at the file /src/app/get-emails-imap/actions.ts for more details
 // import {
 //   getEmails,
-//   updateEmailWithSentimentAndSummary,
 // } from "@/app/get-emails-imap/actions";
+
 import { Email, Sentiment, sentimentEmojis } from "@/app/types/app-types";
 import { io, Socket } from "socket.io-client";
 import { IconCheck, IconEye, IconEyeOff, IconX } from "@tabler/icons-react";
 import InBoxListPlaceHolder from "@/app/inbox-list-place-holder";
+import {updateEmailWithSentimentAndSummary} from "@/app/ai/update-email-with-sentiment-and-summary";
 
 export default function InboxApp(): ReactElement {
   const [emails, setEmails] = useState<Email[]>([]);

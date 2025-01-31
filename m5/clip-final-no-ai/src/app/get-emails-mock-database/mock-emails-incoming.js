@@ -1,3 +1,5 @@
+// this is to simulate the incoming emails to the sporting goods store.
+
 const mockEmailsIncoming = [
   {
     id: "1",
