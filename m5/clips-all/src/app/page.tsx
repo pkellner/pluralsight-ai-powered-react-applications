@@ -21,6 +21,7 @@ import {
 //   getEmails,
 //   updateEmailWithSentimentAndSummary,
 // } from "@/app/get-emails-imap/actions";
+
 import { Email, Sentiment, sentimentEmojis } from "@/app/types/app-types";
 import { io, Socket } from "socket.io-client";
 import { IconMail, IconMailOpened } from "@tabler/icons-react";
@@ -112,7 +113,6 @@ export default function InboxApp(): ReactElement {
   function handleRowClick(emailId: string) {
     setSelectedEmailId(emailId);
 
-    // Mark the clicked email as not seen
     setEmails((prevEmails) =>
       prevEmails.map((em) => (em.id === emailId ? { ...em, seen: true } : em)),
     );
@@ -142,8 +142,6 @@ export default function InboxApp(): ReactElement {
     return <InBoxListPlaceHolder />;
   }
 
-  // Just keep emails in order of newest first (or as they come in),
-  // then filter by sentiment toggles.
   const sortedEmails = [...emails].sort(
     (a, b) => b.receivedDate.getTime() - a.receivedDate.getTime(),
   );
@@ -158,7 +156,6 @@ export default function InboxApp(): ReactElement {
           Inbox
         </div>
 
-        {/* Toolbar for filtering by sentiment */}
         <div className="p-4 border-b border-gray-300 bg-white flex flex-wrap gap-2">
           {Object.entries(sentimentEmojis).map(([s, emoji]) => {
             const sentimentKey = s as Sentiment;
