@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
-
 export const SentimentSchema = z.enum([
   "Promotional",
   "Personal",
@@ -26,9 +25,7 @@ export async function analyzeSentiment(body: string): Promise<Sentiment> {
     Only respond with one of these, but if you are not sure respond
     with Pending.\n\nEmail body: ${body}`,
   });
-
   let sentiment: Sentiment = "Pending"; // Default in case invalid response
-
   try {
     sentiment = SentimentSchema.parse(sentimentResponse.text.trim());
   } catch (error: unknown) {
@@ -39,6 +36,5 @@ export async function analyzeSentiment(body: string): Promise<Sentiment> {
       sentimentResponse.text,
     );
   }
-
   return sentiment;
 }

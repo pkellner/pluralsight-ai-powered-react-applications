@@ -33,8 +33,6 @@ export async function analyzeSentimentWithSchema(
       sentimentResponse.object,
     );
 
-    console.log("Valid sentiment response:", parsedResponse);
-
     return parsedResponse.sentiment;
   } catch (error) {
     console.error("Error analyzing sentiment:", error);
