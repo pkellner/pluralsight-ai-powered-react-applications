@@ -97,7 +97,7 @@ export async function getEmails(
 
   const analyzedEmails = await Promise.all(
     emails.map(async (email) => {
-      const sentiment = await analyzeSentiment(email.body);
+      const sentiment = await analyzeSentimentWithSchema(email.body);
       const summary = await summarizeContent(email.body);
       return {
         ...email,
