@@ -1,10 +1,9 @@
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 
-export const SENTIMENTS = [
-  "Promotional", "Personal", "Angry", "Needy",
+const SENTIMENTS = ["Promotional", "Personal", "Angry", "Needy",
   "Confused", "Appreciative", "Complimentary", "Pending"] as const;
-export type Sentiment = (typeof SENTIMENTS)[number];
+type Sentiment = (typeof SENTIMENTS)[number];
 
 interface SentimentResponse {
   sentiment: Sentiment;
