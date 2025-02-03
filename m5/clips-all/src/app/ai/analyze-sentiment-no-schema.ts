@@ -2,16 +2,8 @@ import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 
 export const SENTIMENTS = [
-  "Promotional",
-  "Personal",
-  "Angry",
-  "Needy",
-  "Confused",
-  "Appreciative",
-  "Complimentary",
-  "Pending",
-] as const;
-
+  "Promotional", "Personal", "Angry", "Needy",
+  "Confused", "Appreciative", "Complimentary", "Pending"] as const;
 export type Sentiment = (typeof SENTIMENTS)[number];
 
 interface SentimentResponse {
@@ -37,8 +29,8 @@ export async function analyzeSentiment(body: string): Promise<Sentiment> {
   try {
     const sentimentResponse = await generateObject({
       model: openai("gpt-4o-mini"),
-      prompt: `Analyze the sentiment of this email body. Respond with JSON containing a 'sentiment' field, 
-        one of: ${SENTIMENTS.join(", ")}. Email body: ${body}`,
+      prompt: `Analyze the sentiment of this email body. Respond with JSON containing 
+        a 'sentiment' field, one of: ${SENTIMENTS.join(", ")}. Email body: ${body}`,
       output: "no-schema",
       mode: "json",
     });
