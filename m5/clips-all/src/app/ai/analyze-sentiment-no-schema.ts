@@ -26,39 +26,25 @@ function validateSentimentResponse(response: unknown): SentimentResponse {
   if (!response || typeof response !== "object") {
     throw new Error("Invalid response format");
   }
-
-  const typedResponse = response as Record<string, unknown>;
-
-  if (
-    !typedResponse.sentiment ||
-    typeof typedResponse.sentiment !== "string" ||
-    !isValidSentiment(typedResponse.sentiment)
-  ) {
+  const { sentiment } = response as { sentiment?: unknown };
+  if (typeof sentiment !== "string" || !isValidSentiment(sentiment)) {
     throw new Error("Invalid sentiment value");
   }
-
-  return { sentiment: typedResponse.sentiment };
+  return { sentiment };
 }
 
 export async function analyzeSentiment(body: string): Promise<Sentiment> {
   try {
     const sentimentResponse = await generateObject({
       model: openai("gpt-4o-mini"),
-      prompt: `Analyze the sentiment of the following email body and respond with a 
-         JSON object containing a 'sentiment' field with one of these 
-         values: ${SENTIMENTS.join(", ")} Email body: ${body}`,
+      prompt: `Analyze the sentiment of this email body. Respond with JSON containing a 'sentiment' field, 
+        one of: ${SENTIMENTS.join(", ")}. Email body: ${body}`,
       output: "no-schema",
       mode: "json",
     });
 
-    const validatedResponse = validateSentimentResponse(
-      sentimentResponse.object,
-    );
-    console.log(
-      "/ai/analyze-sentiment-no-schema.ts: validatedResponse:",
-      validatedResponse,
-    );
-    return validatedResponse.sentiment;
+    const validated = validateSentimentResponse(sentimentResponse.object);
+    return validated.sentiment;
   } catch (error) {
     console.error("Error analyzing sentiment:", error);
     return "Pending";

@@ -2,40 +2,21 @@ import { z } from "zod";
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 
-export const SentimentSchema = z.enum([
-  "Promotional",
-  "Personal",
-  "Angry",
-  "Needy",
-  "Confused",
-  "Appreciative",
-  "Complimentary",
-  "Pending",
-]);
+const sentiments = ["Promotional", "Personal", "Angry", "Needy",
+  "Confused", "Appreciative", "Complimentary", "Pending"] as const;
 
+export const SentimentSchema = z.enum(sentiments);
 type Sentiment = z.infer<typeof SentimentSchema>;
 
-export async function analyzeSentiment(
-  body: string,
-): Promise<Sentiment> {
-  const SentimentResponseSchema = z.object({
-    sentiment: SentimentSchema,
-  });
-
+export async function analyzeSentiment(body: string): Promise<Sentiment> {
   try {
-    const sentimentResponse = await generateObject({
+    const { object } = await generateObject({
       model: openai("gpt-4o-mini"),
       prompt: `Analyze the sentiment of the following email body: ${body}`,
-      schema: SentimentResponseSchema,
+      schema: z.object({ sentiment: SentimentSchema }),
     });
-
-    const parsedResponse = SentimentResponseSchema.parse(
-      sentimentResponse.object,
-    );
-
-    return parsedResponse.sentiment;
-  } catch (error) {
-    console.error("Error analyzing sentiment:", error);
-    return "Pending"; // Default value in case of errors
+    return object.sentiment;
+  } catch {
+    return "Pending";
   }
 }
