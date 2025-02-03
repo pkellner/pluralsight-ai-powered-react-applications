@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "devturbo": "next dev --turbopack",
-    "dev": "next dev",
+    "dev": "next dev & npm run websocketserver",
+    "nextdev": "next dev",
     "build": "next build",
     "start": "next start",
+    "websocketserver": "ts-node src/socket-server.js",
     "lint": "next lint"
   },
   "dependencies": {

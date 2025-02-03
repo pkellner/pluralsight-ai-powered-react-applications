@@ -4,7 +4,7 @@ import { FetchMessageObject, ImapFlow } from "imapflow";
 import { simpleParser } from "mailparser";
 import { Email } from "@/app/types/app-types";
 import { summarizeContent } from "@/app/ai/summarize-content";
-import { analyzeSentimentWithSchema } from "@/app/ai/analyze-sentiment-with-schema";
+import {analyzeSentiment} from "@/app/ai/analyze-sentiment";
 
 export async function getEmails(
   maxCnt: number = 10,
@@ -96,7 +96,7 @@ export async function getEmails(
 
   const analyzedEmails = await Promise.all(
     emails.map(async (email) => {
-      const sentiment = await analyzeSentimentWithSchema(email.body);
+      const sentiment = await analyzeSentiment(email.body);
       const summary = await summarizeContent(email.body);
       return {
         ...email,
@@ -109,10 +109,12 @@ export async function getEmails(
   return analyzedEmails?.slice(maxCnt) as Email[];
 }
 
+// duplicated code because we would only be using get-emails-imap or
+//   get-emails-mock-database but not both
 export async function updateEmailWithSentimentAndSummary(
   email: Email,
 ): Promise<Email> {
-  const sentiment = await analyzeSentimentWithSchema(email.body);
+  const sentiment = await analyzeSentiment(email.body);
   const summary = await summarizeContent(email.body);
 
   return {

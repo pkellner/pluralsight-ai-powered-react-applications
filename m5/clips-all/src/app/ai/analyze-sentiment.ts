@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { generateText } from "ai";
+import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
+
 export const SentimentSchema = z.enum([
   "Promotional",
   "Personal",
@@ -13,28 +14,28 @@ export const SentimentSchema = z.enum([
 ]);
 
 type Sentiment = z.infer<typeof SentimentSchema>;
-const sentimentValues = SentimentSchema.options;
 
-export async function analyzeSentiment(body: string): Promise<Sentiment> {
-  const sentimentResponse = await generateText({
-    model: openai("gpt-4o-mini"),
-    temperature: 0.9,
-    prompt: `Analyze the sentiment of the following email body. Respond with one 
-    of these options: 
-    ${sentimentValues.join(", ")}.
-    Only respond with one of these, but if you are not sure respond
-    with Pending.\n\nEmail body: ${body}`,
+export async function analyzeSentiment(
+  body: string,
+): Promise<Sentiment> {
+  const SentimentResponseSchema = z.object({
+    sentiment: SentimentSchema,
   });
-  let sentiment: Sentiment = "Pending"; // Default in case invalid response
+
   try {
-    sentiment = SentimentSchema.parse(sentimentResponse.text.trim());
-  } catch (error: unknown) {
-    console.error(
-      `Invalid sentiment response: ${
-        error instanceof Error ? error.message : ""
-      }`,
-      sentimentResponse.text,
+    const sentimentResponse = await generateObject({
+      model: openai("gpt-4o-mini"),
+      prompt: `Analyze the sentiment of the following email body: ${body}`,
+      schema: SentimentResponseSchema,
+    });
+
+    const parsedResponse = SentimentResponseSchema.parse(
+      sentimentResponse.object,
     );
+
+    return parsedResponse.sentiment;
+  } catch (error) {
+    console.error("Error analyzing sentiment:", error);
+    return "Pending"; // Default value in case of errors
   }
-  return sentiment;
 }
