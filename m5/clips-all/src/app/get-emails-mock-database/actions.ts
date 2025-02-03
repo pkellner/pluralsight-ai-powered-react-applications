@@ -3,7 +3,7 @@
 import { mockEmails } from "@/app/get-emails-mock-database/mock-emails";
 import { Email } from "@/app/types/app-types";
 import { summarizeContent } from "@/app/ai/summarize-content";
-import {analyzeSentiment} from "@/app/ai/analyze-sentiment-no-schema";
+import {analyzeSentiment} from "@/app/ai/analyze-sentiment";
 
 export async function getEmails(maxCnt: number = 10): Promise<Email[]> {
   const analyzedEmails = await Promise.all(
