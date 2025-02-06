@@ -1,6 +1,5 @@
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-import "dotenv/config";
 
 interface Message {
   role: "user" | "assistant";
@@ -26,7 +25,6 @@ async function main() {
 
   const result1 = await streamText({
     model: openai("gpt-4"),
-    temperature: 0.9,
     messages,
   });
 
@@ -41,7 +39,8 @@ async function main() {
   // Add the second question to the conversation
   messages.push({
     role: "user",
-    content: `Assume I have the number of Euros you just converted for me, tell me how much that might be in Yen?`,
+    content: `Assume I have the number of Euros you just converted 
+      for me, tell me how much that might be in Yen?`,
   });
 
   const result2 = await streamText({
