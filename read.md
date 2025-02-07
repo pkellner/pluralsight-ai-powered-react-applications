@@ -5,7 +5,7 @@
 | **Course**                                                                                                                 | Release Date  |
 |----------------------------------------------------------------------------------------------------------------------------|---------------|
 | **[AI-Powered React Applications: Building Intelligent Interfaces](https://pluralsight.com/courses/ai-powered-react-applications--building-intelligent-interfaces/)**  *(this course)* | February 2025 |
-| **[What is React](https://pluralsight.com/courses/react-what-is/)**                                                        | July 2024     |
+| **[What is React](https://pluralsight.com/courses/react-what-is/)**                                                        | January 2025  |
 | **[Working With Data in React](http://www.pluralsight.com/courses/react-working-data)**                                    | February 2024 |
 | **[Server Component Fundamentals in React 18](http://www.pluralsight.com/courses/react-18-server-component-fundamentals)** | June 2023     |
 | **[Working with Components in React 18](https://pluralsight.com/courses/react-18-working-components/)**                    | February 2023 |
@@ -21,10 +21,10 @@ The main branch here is the latest updates to the Pluralsight course <b>AI-Power
 
 ## Course Description
 
-FIXME: Add course description here
+This course teaches you how to incorporate AI into your React apps to make them both more compelling to your browser users, and more valuable in general.
 
 ## Getting Started
-1. **Install [Node 18.17 or later](https://nodejs.org)**.
+1. **Install [Node 18.18 or later](https://nodejs.org)**.
 2. **Clone this repository.** - `https://github.com/pkellner/pluralsight-what-is-react` or [download the zip](https://github.com/pkellner/pluralsight-what-is-react/archive/main.zip)
 3. **Set your default directory to which module you want (example: `cd m3-hands-on-moving-to-concurrent-rendering` - `cd m4-hands-on-with-the-new-react-hooks`
 4. **Install Node Packages with Dependencies.** - `npm install`
