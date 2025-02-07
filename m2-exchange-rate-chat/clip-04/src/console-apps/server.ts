@@ -58,3 +58,5 @@ async function main() {
 }
 
 main().catch(console.error);
+
+const prompt = `You are an AI that...` + `Convert $150 Dollars to ...`
