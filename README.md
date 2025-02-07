@@ -25,8 +25,8 @@ This course teaches you how to incorporate AI into your React apps to make them 
 
 ## Getting Started
 1. **Install [Node 18.18 or later](https://nodejs.org)**.
-2. **Clone this repository.** - `https://github.com/pkellner/pluralsight-what-is-react` or [download the zip](https://github.com/pkellner/pluralsight-what-is-react/archive/main.zip)
-3. **Set your default directory to which module you want (example: `cd m3-hands-on-moving-to-concurrent-rendering` - `cd m4-hands-on-with-the-new-react-hooks`
+2. **Clone this repository.** - `https://github.com/pkellner/pluralsight-ai-powered-react-applications` or [download the zip](https://github.com/pkellner/pluralsight-ai-powered-react-applications/archive/main.zip)
+3. **Set your default directory to which module you want (example: `cd m2` - `cd m4`
 4. **Install Node Packages with Dependencies.** - `npm install`
 
 ## Directory Structure Here
