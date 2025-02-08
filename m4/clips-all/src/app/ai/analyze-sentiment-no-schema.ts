@@ -28,8 +28,9 @@ export async function analyzeSentiment(body: string): Promise<Sentiment> {
   try {
     const sentimentResponse = await generateObject({
       model: openai("gpt-4o-mini"),
-      prompt: `Analyze the sentiment of this email body. Respond with JSON containing 
-        a 'sentiment' field, one of: ${SENTIMENTS.join(", ")}. Email body: ${body}`,
+      prompt: `Analyze the sentiment of this email body. Respond with JSON 
+        containing a 'sentiment' field, one of: ${SENTIMENTS.join(", ")}. 
+        Email body: ${body}`,
       output: "no-schema",
       mode: "json",
     });

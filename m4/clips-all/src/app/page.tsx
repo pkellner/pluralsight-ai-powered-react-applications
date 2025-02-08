@@ -15,13 +15,6 @@ import {
   updateEmailWithSentimentAndSummary,
 } from "@/app/get-emails-mock-database/actions";
 
-// If you comment the code above and uncomment the next 4 lines, then you can
-// get data from a real IMAP server. Look at the file /src/app/get-emails-imap/actions.ts for more details
-// import {
-//   getEmails,
-//   updateEmailWithSentimentAndSummary,
-// } from "@/app/get-emails-imap/actions";
-
 import { Email, Sentiment, sentimentEmojis } from "@/app/types/app-types";
 import { io, Socket } from "socket.io-client";
 import { IconMail, IconMailOpened } from "@tabler/icons-react";
