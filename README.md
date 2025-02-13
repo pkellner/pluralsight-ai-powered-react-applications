@@ -1,4 +1,4 @@
-# Course Code for [AI-Powered React Applications: Building Intelligent Interfaces](https://pluralsight.com/courses/ai-powered-react-applications--building-intelligent-interfaces) on Pluralsight
+# Course Code for [AI-Powered React Applications: Building Intelligent Interfaces](https://app.pluralsight.com/library/courses/ai-powered-react-applications-building-intelligent-interfaces/) on Pluralsight
 
 ## OTHER Recently Released Courses From Peter Kellner
 
